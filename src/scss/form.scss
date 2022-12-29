@@ -1,0 +1,124 @@
+$color-primary: #f46a25;
+$color-back: #121212;
+.form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: $color-back;
+    width: 32rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.15);
+    gap: 1rem;
+    padding: 1rem;
+    padding-bottom: 1.5rem;
+    transition-duration: 0.3s;
+    @media screen and (max-width: 768px) {
+        width: 90vw;
+    }
+    .row {
+        margin-top: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.7rem;
+        border: solid $color-primary;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        width: calc(100% - 2rem);
+        position: relative;
+        h1 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: $color-primary;
+            background: $color-back;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            position: absolute;
+            top: -0.9rem;
+        }
+        .check {
+            width: fit-content;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            position: relative;
+            div:first-child {
+                height: 1.6em;
+                width: 100%;
+                padding-right: 4rem;
+                display: flex;
+                align-items: center;
+            }
+            div:last-child {
+                align-items: flex-end;
+                width: 3rem;
+                position: absolute;
+                right: 0;
+            }
+        }
+    }
+    .header {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        svg {
+            font-size: 2rem;
+            color: $color-primary;
+        }
+    }
+    .input-group {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: white;
+        }
+        input {
+            padding: 0.8rem;
+            padding-left: 0;
+            border: none;
+            background: none;
+            border-bottom: 1px rgba(255, 255, 255, 0.5) solid;
+            backdrop-filter: blur(10px);
+            font-size: 1rem;
+            font-weight: 500;
+            color: white;
+            &::placeholder {
+                color: white;
+            }
+        }
+        &.hide {
+            display: none;
+        }
+    }
+    button {
+        padding: 0.7rem;
+        padding-left: 1.2rem;
+        padding-right: 1.2rem;
+        border: none;
+        border-radius: 0.5rem;
+        border: solid $color-primary;
+        background: none;
+        font-size: 1rem;
+        color: white;
+        cursor: pointer;
+        transition: all 0.5s ease-in-out;
+        &:hover {
+            box-shadow: inset 6rem 0rem 0rem $color-primary;
+        }
+    }
+}
