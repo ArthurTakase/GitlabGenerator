@@ -154,5 +154,5 @@ ${b_prod.map(b => `    - ${b}`).join('\n')}
 `
 
     exportFile(file)
-    if (versioning) { download_file('version.py') }
+    if (versioning) { download_file('assets/version.py') }
 }
