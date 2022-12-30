@@ -8,7 +8,7 @@ function exportFile(content) {
     link.click();
     URL.revokeObjectURL(link.href);
 
-    toast.success('YML généré avec succès !');
+    toast.success('YML généré avec succès ! (renommez-le .gitlab-ci.yml si besoin)');
 }
 
 function download_file(path) {
