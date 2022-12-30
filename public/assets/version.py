@@ -1,13 +1,10 @@
 import urllib.request
 from sys import argv
+from bs4 import BeautifulSoup
 
 def get_last_version(url):
     f = urllib.request.urlopen(url)
-    content = str(f.read()).rstrip("/>").split("<")
-    content = [content[i] for i in range(len(content)) if "a href=" in content[i]]
-    content = [content[i].split('">')[1] for i in range(len(content)) if "Parent" not in content[i] and "latest" not in content[i]]
-    content.sort()
-    return content[-1].replace("-SNAPSHOT", "")
+    return BeautifulSoup(f.read(), "html.parser").find("table").find_all("tr")[-1].find_all("td")[0].text.replace("-SNAPSHOT", "")
 
 def update_version(type):
     version = None
@@ -40,11 +37,6 @@ def update_version(type):
     with open('gradle.properties', "w") as f: f.writelines(lines)
 
 commit_msg = input()
-
-print("-" * 50)
-print(f"Commit message: {commit_msg}")
-print(f"Arguments: {argv}")
-print("-" * 50)
 
 if "MINOR" in commit_msg: update_version("MINOR")
 elif "MAJOR" in commit_msg: update_version("MAJOR")
