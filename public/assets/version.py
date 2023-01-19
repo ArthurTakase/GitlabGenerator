@@ -7,7 +7,9 @@ def get_last_version(url):
     content = [content[i] for i in range(len(content)) if "a href=" in content[i]]
     content = [content[i].split('">')[1] for i in range(len(content)) if "Parent" not in content[i] and "latest" not in content[i]]
     content.sort()
-    return content[-1].split("-")[0]
+    if len(content[-1].split("-")) > 1:
+        return content[-1].split("-")[0]
+    return content[-1]
 
 def update_version(type):
     version = None
@@ -19,7 +21,11 @@ def update_version(type):
 
         for i in range(len(lines)):
             if "version_dep33=" in lines[i]:
-                if version is None: version = lines[i].split("=")[1].rstrip("\n").split("-")[0]
+                if version is None:
+                    try:
+                        version = lines[i].split("=")[1].rstrip("\n").split("-")[0]
+                    except:
+                        version = lines[i].split("=")[1].rstrip("\n")
 
                 new_version = []
                 try: 
