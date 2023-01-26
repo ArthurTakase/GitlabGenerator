@@ -2,12 +2,12 @@
 
 ## Fonctionnalités
 
-- Préparation du projet Grails avec gradlew clean
-- Mise à jour de la version de l'application en utilisant un script python (facultatif)
+- Préparation du projet Grails avec gradlew clean.
+- Mise à jour de la version de l'application en utilisant un script python (facultatif).
 - Exécution des tests unitaires et d'intégration avec gradlew test et gradlew integrationTest (facultatif)
-- Génération de l'application avec gradlew assemble
-- Déploiement de l'application sur nexus
-- Vérification de l'état de Portainer (facultatif)
+- Génération de l'application avec gradlew assemble.
+- Déploiement de l'application sur nexus.
+- Vérification de l'état de Portainer (facultatif).
 
 ## Utilisation
 
@@ -42,5 +42,9 @@ Pour augmenter la `MAJOR` ou la `MINOR`, vous devez le préciser en ajoutant leu
 
 ## TODO
 
-[ ] Ajouter un tag lors d'un changement de version sur la branche de production
-[ ] Analyse de la qualité de code avec SonarQube ou MegaLinter
+- Ajouter un tag lors d'un changement de version sur la branche de production.
+- Analyse de la qualité de code avec SonarQube ou MegaLinter.
+
+## Problèmes connus
+
+- Après une mise à jour du repo, il est nécesaire d'attendre 5 minutes pour que les fichiers soient à jour sur raw.github et utilisables sur la CI de gitlab.
