@@ -1,6 +1,5 @@
 stages:
   - prepare_grails_project
-  - lint
   - version
   - test
   - build
@@ -26,29 +25,6 @@ prepare_grails_project:
   stage: prepare_grails_project
   script:
     - ./gradlew clean
-  tags:
-    - dockerswarm
-
-# ------------------------------------
-# LINT
-# ------------------------------------
-
-mega-linter:
-  stage: lint
-  image: tetraweb/php
-  variables:
-    GIT_STRATEGY: none
-  script:
-    # - apk add nodejs npm
-    - apt-get update
-    - apt-get install -y nodejs npm
-    - npm install -g mega-linter-runner
-    - npx mega-linter-runner -r latest -e 'DISABLE=CSS,JSON,MARKDOWN,YAML,SPELL,COPYPASTE' -e 'ENABLE_LINTERS=GROOVY_NPM_GROOVY_LINT'
-  artifacts:
-    when: always
-    paths:
-      - report
-    expire_in: 1 week
   tags:
     - dockerswarm
 

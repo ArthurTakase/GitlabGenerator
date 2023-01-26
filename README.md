@@ -42,5 +42,5 @@ Pour augmenter la `MAJOR` ou la `MINOR`, vous devez le préciser en ajoutant leu
 
 ## TODO
 
+[ ] Ajouter un tag lors d'un changement de version sur la branche de production
 [ ] Analyse de la qualité de code avec SonarQube ou MegaLinter
-
