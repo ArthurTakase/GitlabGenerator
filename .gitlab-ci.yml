@@ -91,10 +91,10 @@ update_version_snapshot:
     - wget $PYTHON_URL
     - chmod +x version.py
     - version_number=$(echo $(git log -1 --pretty=%B) | python3 ./version.py "$NEXUS_URL")
-    - git config user.email $GITLAB_USER_EMAIL
-    - git config user.name $GITLAB_USER_NAME
-    - git tag -a $version_number -m "Tagging version $version_number"
-    - git push origin $version_number
+    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "USERNAME" ]; then git config user.email $EMAIL; fi
+    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "USERNAME" ]; then git config user.name $USERNAME; fi
+    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "USERNAME" ]; then git tag -a $version_number -m "Tagging version $version_number"; fi
+    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "USERNAME" ]; then git push origin $version_number; fi
   rules:
     - if: ($CI_COMMIT_REF_NAME == $DEV_BRANCH && $CI_COMMIT_REF_NAME != $PROD_BRANCH && $NEXUS_URL)
       when: always
