@@ -91,15 +91,14 @@ update_version_snapshot:
     - wget $PYTHON_URL
     - chmod +x version.py
     - version_number=$(echo $(git log -1 --pretty=%B) | python3 ./version.py "$NEXUS_URL")
-  after_script:
     - echo $version_number && echo $EMAIL && echo $TOKEN && echo $USERNAME && echo $PROJECT
-    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "USERNAME" ] && [ -n "PROJECT" ]; then git --version; fi
-    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "USERNAME" ] && [ -n "PROJECT" ]; then git remote remove origin; fi
-    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "USERNAME" ] && [ -n "PROJECT" ]; then git remote add origin https://oauth2:${TOKEN}@gitlab.cg33.fr/${PROJECT}.git; fi
-    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "USERNAME" ] && [ -n "PROJECT" ]; then git config user.email $EMAIL; fi
-    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "USERNAME" ] && [ -n "PROJECT" ]; then git config user.name $USERNAME; fi
-    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "USERNAME" ] && [ -n "PROJECT" ]; then git tag -a $version_number -m "Release version $version_number"; fi
-    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "USERNAME" ] && [ -n "PROJECT" ]; then git push origin $version_number; fi
+    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "$USERNAME" ] && [ -n "$PROJECT" ]; then git --version; fi
+    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "$USERNAME" ] && [ -n "$PROJECT" ]; then git remote remove origin; fi
+    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "$USERNAME" ] && [ -n "$PROJECT" ]; then git remote add origin https://oauth2:${TOKEN}@gitlab.cg33.fr/${PROJECT}.git; fi
+    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "$USERNAME" ] && [ -n "$PROJECT" ]; then git config user.email $EMAIL; fi
+    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "$USERNAME" ] && [ -n "$PROJECT" ]; then git config user.name $USERNAME; fi
+    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "$USERNAME" ] && [ -n "$PROJECT" ]; then git tag -a $version_number -m "Release version $version_number"; fi
+    - if [ -n "$EMAIL" ] && [ -n "$TOKEN" ] && [ -n "$USERNAME" ] && [ -n "$PROJECT" ]; then git push origin $version_number; fi
   rules:
     - if: ($CI_COMMIT_REF_NAME == $DEV_BRANCH && $CI_COMMIT_REF_NAME != $PROD_BRANCH && $NEXUS_URL)
       when: always
