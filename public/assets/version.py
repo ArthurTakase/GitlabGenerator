@@ -2,56 +2,36 @@ import urllib.request
 from sys import argv
 
 def get_last_version(url):
-    f = urllib.request.urlopen(url)
-    content = str(f.read()).rstrip("/>").split("<")
-    content = [content[i] for i in range(len(content)) if "a href=" in content[i]]
-    content = [content[i].split('">')[1] for i in range(len(content)) if "Parent" not in content[i] and "latest" not in content[i]]
-    content.sort()
-    if len(content[-1].split("-")) > 1:
+    try:
+        content = str(urllib.request.urlopen(url).read()).split("<")
+        content = [content[i].split(">")[1] for i in range(len(content)) if "a href=" in content[i]]
         return content[-1].split("-")[0]
-    return content[-1]
+    except: return None
 
-def update_version(type):
-    version = None
+def update_version(version, index):
+    new_version = version.split('.', 3)
+    while len(new_version) < 3: new_version.append("0")
+    new_version[index] = str(int(new_version[index]) + 1)
+    return '.'.join(new_version)
+
+def edit_file(index, version = None):
     for arg in argv: 
         if "http" in arg: version = get_last_version(arg)
-
     with open('gradle.properties', "r") as f:
         lines = f.readlines()
-
         for i in range(len(lines)):
-            if "version_dep33=" in lines[i]:
-                if version is None:
-                    try:
-                        version = lines[i].split("=")[1].rstrip("\n").split("-")[0]
-                    except:
-                        version = lines[i].split("=")[1].rstrip("\n")
-
-                new_version = []
-                try: 
-                    new_version.append(version.split(".")[0])
-                    new_version.append(version.split(".")[1])
-                    new_version.append(version.split(".")[2])
-                except: 
-                    while len(new_version) < 3: new_version.append("0")
-
-                if type == "MINOR": new_version[1] = str(int(new_version[1]) + 1)
-                elif type == "MAJOR": new_version[0] = str(int(new_version[0]) + 1)
-                else: new_version[2] = str(int(new_version[2]) + 1)
-
-                lines[i] = f"version_dep33={'.'.join(new_version)}{'-SNAPSHOT' if 'release' not in argv else ''}\n"
-                print(lines[i])
-                break
-
+            if "version_dep33=" not in lines[i]: continue
+            if version is None: 
+                try: version = lines[i].split("=")[1].rstrip("\n").split("-")[0]
+                except: version = lines[i].split("=")[1].rstrip("\n")
+            new_version = f"{update_version(version, index)}-SNAPSHOT" if "release" not in argv else version
+            lines[i] = f"version_dep33={new_version}\n"
+            break
     with open('gradle.properties', "w") as f: f.writelines(lines)
+    print(new_version)
 
 commit_msg = input()
 
-print("-" * 50)
-print(f"Commit message: {commit_msg}")
-print(f"Arguments: {argv}")
-print("-" * 50)
-
-if "MINOR" in commit_msg: update_version("MINOR")
-elif "MAJOR" in commit_msg: update_version("MAJOR")
-else: update_version("auto")
+if "MAJOR" in commit_msg: edit_file(0)
+elif "MINOR" in commit_msg: edit_file(1)
+else: edit_file(2)
