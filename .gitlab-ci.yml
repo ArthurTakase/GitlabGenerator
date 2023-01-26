@@ -1,0 +1,200 @@
+stages:
+  - prepare_grails_project
+  - lint
+  - version
+  - test
+  - build
+  - deploy
+  - portainer
+
+image: gradle:alpine
+
+variables:
+  PYTHON_URL: "https://raw.githubusercontent.com/ArthurTakase/GitlabGenerator/main/version.py"
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+  - chmod +x gradlew
+
+# ------------------------------------
+# PREPARE GRADLE PROJECT
+# ------------------------------------
+
+prepare_grails_project:
+  variables:
+    GIT_STRATEGY: fetch
+  stage: prepare_grails_project
+  script:
+    - ./gradlew clean
+  tags:
+    - dockerswarm
+
+# ------------------------------------
+# LINT
+# ------------------------------------
+
+mega-linter:
+  stage: lint
+  image: tetraweb/php
+  variables:
+    GIT_STRATEGY: none
+  script:
+    # - apk add nodejs npm
+    - apt-get update
+    - apt-get install -y nodejs npm
+    - npm install -g mega-linter-runner
+    - npx mega-linter-runner -r latest -e 'DISABLE=CSS,JSON,MARKDOWN,YAML,SPELL,COPYPASTE' -e 'ENABLE_LINTERS=GROOVY_NPM_GROOVY_LINT'
+  artifacts:
+    when: always
+    paths:
+      - report
+    expire_in: 1 week
+  tags:
+    - dockerswarm
+
+# ------------------------------------
+# TESTS UNITAIRES ET D'INTEGRATION
+# ------------------------------------
+
+unit-test:
+  stage: test
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - ./gradlew test
+  artifacts:
+    when: always
+    reports:
+      junit: build/test-results/test/**/TEST-*.xml
+  rules:
+    - if: ($TESTS == "true")
+      when: always
+  tags:
+    - dockerswarm
+  allow_failure: true
+
+integration-test:
+  stage: test
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - ./gradlew integrationTest
+  artifacts:
+    when: always
+    reports:
+      junit: build/test-results/integrationTest/**/TEST-*.xml
+  rules:
+    - if: ($TESTS == "true")
+      when: always
+  tags:
+    - dockerswarm
+  allow_failure: true
+
+# ------------------------------------
+# BUILD
+# ------------------------------------
+
+build:
+  variables:
+    GIT_STRATEGY: none
+  stage: build
+  script:
+    - ./gradlew assemble --refresh-dependencies
+    - ls -alh build
+  # only:
+  #   - $DEV_BRANCH
+  #   - $PROD_BRANCH
+  tags:
+    - dockerswarm
+
+# ------------------------------------
+# VERSIONNING
+# ------------------------------------
+
+update_version_snapshot:
+  stage: version
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - wget $PYTHON_URL
+    - chmod +x version.py
+    - echo $(git log -1 --pretty=%B) | python3 ./version.py "$NEXUS_URL"
+  rules:
+    - if: ($CI_COMMIT_REF_NAME == $DEV_BRANCH && $CI_COMMIT_REF_NAME != $PROD_BRANCH && $NEXUS_URL)
+      when: always
+  tags:
+    - dockerswarm
+
+update_version_release:
+  stage: version
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - wget $PYTHON_URL
+    - chmod +x version.py
+    - echo $(git log -1 --pretty=%B) | python3 ./version.py release "$NEXUS_URL"
+  rules:
+    - if: ($CI_COMMIT_REF_NAME != $DEV_BRANCH && $CI_COMMIT_REF_NAME == $PROD_BRANCH && $NEXUS_URL)
+      when: always
+  tags:
+    - dockerswarm
+
+# ------------------------------------
+# DEPLOY
+# ------------------------------------
+
+deploy_nexus_va:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  dependencies:
+    - build
+  script:
+    - ./gradlew removeAll --stacktrace --info
+  rules:
+    - if: ($CI_COMMIT_REF_NAME == $DEV_BRANCH && $CI_COMMIT_REF_NAME != $PROD_BRANCH)
+      when: always
+  tags:
+    - dockerswarm
+
+deploy_nexus_prod:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  dependencies:
+    - build
+  script:
+    - ./gradlew removeAll --stacktrace --info
+  rules:
+    - if: ($CI_COMMIT_REF_NAME != $DEV_BRANCH && $CI_COMMIT_REF_NAME == $PROD_BRANCH)
+      when: always
+  tags:
+    - dockerswarm
+
+# ------------------------------------
+# PORTAINER
+# ------------------------------------
+
+check_portainer_va:
+  stage: portainer
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - curl --data "test=test" "$WEBHOOK_DEV"
+  rules:
+    - if: ($WEBHOOK_DEV && $CI_COMMIT_REF_NAME == $DEV_BRANCH && $CI_COMMIT_REF_NAME != $PROD_BRANCH)
+      when: always
+  tags:
+    - dockerswarm
+
+check_portainer_prod:
+  stage: portainer
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - curl --data "test=test" "$WEBHOOK_PROD"
+  rules:
+    - if: ($WEBHOOK_PROD && $CI_COMMIT_REF_NAME != $DEV_BRANCH && $CI_COMMIT_REF_NAME == $PROD_BRANCH)
+      when: always
+  tags:
+    - dockerswarm
