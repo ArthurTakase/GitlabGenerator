@@ -91,14 +91,7 @@ update_version_snapshot:
     - wget $PYTHON_URL
     - chmod +x version.py
     - version_number=$(echo $(git log -1 --pretty=%B) | python3 ./version.py "$NEXUS_URL")
-    - echo $version_number && echo $EMAIL && echo $TOKEN && echo $USERNAME && echo $PROJECT
-    - git --version
-    - git remote remove origin
-    - git remote add origin https://oauth2:${TOKEN}@gitlab.cg33.fr/${PROJECT}.git
-    - git config user.email $EMAIL
-    - git config user.name $USERNAME
-    - git tag -a $version_number -m "Release version $version_number"
-    - git push origin $version_number
+    - echo "Update to $version_number"
   rules:
     - if: ($CI_COMMIT_REF_NAME == $DEV_BRANCH && $CI_COMMIT_REF_NAME != $PROD_BRANCH && $NEXUS_URL)
       when: always
