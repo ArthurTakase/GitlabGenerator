@@ -32,6 +32,7 @@ def edit_file(index, version = None):
 
 commit_msg = input()
 
-if "MAJOR" in commit_msg: edit_file(0)
+if "MISC" in commit_msg: exit(0)
+elif "MAJOR" in commit_msg: edit_file(0)
 elif "MINOR" in commit_msg: edit_file(1)
 else: edit_file(2)

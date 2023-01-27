@@ -40,6 +40,8 @@ Vous pouvez activer le versionning en renseignant la variable `NEXUS_URL` de vot
 Par défaut, la partie `LEGACY` va augmenter de 1 à chaque nouveau passage dans la CI de Gitlab.
 Pour augmenter la `MAJOR` ou la `MINOR`, vous devez le préciser en ajoutant leur nom dans votre message de commit (ex: `MINOR: mon message de commit`).
 
+Si vous écrivez le mot clef `MISC`, le programme ne changera pas la version de votre projet.
+
 ## TODO
 
 - Ajouter un tag lors d'un changement de version sur la branche de production.
