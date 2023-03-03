@@ -221,7 +221,7 @@ manage_tickets_merge:
     - echo $CI_COMMIT_BRANCH
     - echo $PROD_BRANCH
     - echo $DEV_BRANCH
-    - python3 ./ticket.py $TOKEN $CI_PROJECT_ID $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $CI_COMMIT_BRANCH $PROD_BRANCH $DEV_BRANCH
+    - python3 ./ticket.py $TOKEN $CI_PROJECT_ID $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME $PROD_BRANCH $DEV_BRANCH
   rules:
     - if: ($TOKEN && $CI_PIPELINE_SOURCE == "merge_request_event")
       when: always
