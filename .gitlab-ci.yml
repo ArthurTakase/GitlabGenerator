@@ -5,11 +5,13 @@ stages:
   - build
   - deploy
   - portainer
+  - tickets
 
 image: gradle:alpine
 
 variables:
-  PYTHON_URL: "https://raw.githubusercontent.com/ArthurTakase/GitlabGenerator/main/version.py"
+  PYTHON_VERSION_URL: "https://raw.githubusercontent.com/ArthurTakase/GitlabGenerator/main/version.py"
+  PYTHON_TICKET_URL: "https://raw.githubusercontent.com/ArthurTakase/GitlabGenerator/main/ticket.py"
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
@@ -88,7 +90,7 @@ update_version_snapshot:
   variables:
     GIT_STRATEGY: none
   script:
-    - wget $PYTHON_URL
+    - wget $PYTHON_VERSION_URL
     - chmod +x version.py
     - version_number=$(echo $(git log -1 --pretty=%B) | python3 ./version.py "$NEXUS_URL")
     - echo "Update to $version_number"
@@ -103,7 +105,7 @@ update_version_release:
   variables:
     GIT_STRATEGY: none
   script:
-    - wget $PYTHON_URL
+    - wget $PYTHON_VERSION_URL
     - chmod +x version.py
     - echo $(git log -1 --pretty=%B) | python3 ./version.py release "$NEXUS_URL"
   rules:
@@ -168,6 +170,38 @@ check_portainer_prod:
     - curl --data "test=test" "$WEBHOOK_PROD"
   rules:
     - if: ($WEBHOOK_PROD && $CI_COMMIT_REF_NAME != $DEV_BRANCH && $CI_COMMIT_REF_NAME == $PROD_BRANCH)
+      when: always
+  tags:
+    - dockerswarm
+
+# ------------------------------------
+# TICKETS
+# ------------------------------------
+
+manage_tickets:
+  stage: tickets
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - wget $PYTHON_TICKET_URL
+    - chmod +x ticket.py
+    - python3 ./ticket.py $TOKEN $CI_PROJECT_ID $CI_COMMIT_BRANCH
+  rules:
+    - if: ($TOKEN)
+      when: always
+  tags:
+    - dockerswarm
+
+manage_tickets_merge:
+  stage: tickets
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - wget $PYTHON_TICKET_URL
+    - chmod +x ticket.py
+    - python3 ./ticket.py $TOKEN $CI_PROJECT_ID $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $CI_COMMIT_BRANCH $PROD_BRANCH $DEV_BRANCH
+  rules:
+    - if: ($TOKEN && $CI_PIPELINE_SOURCE == "merge_request_event")
       when: always
   tags:
     - dockerswarm

@@ -30,14 +30,15 @@
 | NEXUS_URL    | URL du serveur Nexus, gestion automatisée des versions (version HTML)     | `url`    |
 | WEBHOOK_DEV  | URL du webhook utilisé pour déployer sur l'environnement de développement | `url`    |
 | WEBHOOK_PROD | URL du webhook utilisé pour déployer sur l'environnement de production    | `url`    |
+| TOKEN        | [Personal Access Token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) Gitlab pour l'API                                   | `string` |
 
 ## Utilisation du versionning
 
 Vous pouvez activer le versionning en renseignant la variable `NEXUS_URL` de votre repo. L'outil se charge de monter automatiquement la version de votre projet suivant le modèle suivant :
 
-`MAJOR.MINOR.LEGACY` (ex: 1.12.5)
+`MAJOR.MINOR.PATCH` (ex: 1.12.5)
 
-Par défaut, la partie `LEGACY` va augmenter de 1 à chaque nouveau passage dans la CI de Gitlab.
+Par défaut, la partie `PATCH` va augmenter de 1 à chaque nouveau passage dans la CI de Gitlab.
 Pour augmenter la `MAJOR` ou la `MINOR`, vous devez le préciser en ajoutant leur nom dans votre message de commit (ex: `MINOR: mon message de commit`).
 
 Si vous écrivez le mot clef `MISC`, le programme ne changera pas la version de votre projet.
@@ -46,7 +47,8 @@ Si vous écrivez le mot clef `MISC`, le programme ne changera pas la version de 
 
 - Ajouter un tag lors d'un changement de version sur la branche de production.
 - Analyse de la qualité de code avec SonarQube ou MegaLinter.
+- Gestion automatique des tickets.
 
 ## Problèmes connus
 
-- Après une mise à jour du repo, il est nécesaire d'attendre 5 minutes pour que les fichiers soient à jour sur raw.github et utilisables sur la CI de gitlab.
+- Après une mise à jour du repo, il est nécesaire d'attendre 5 minutes pour que les fichiers se mettent à jour sur raw.github et utilisables sur la CI de gitlab.
