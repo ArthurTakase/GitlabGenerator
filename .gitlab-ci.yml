@@ -180,14 +180,15 @@ check_portainer_prod:
 
 manage_tickets:
   stage: tickets
+  image: python:3.8
   variables:
     GIT_STRATEGY: none
   script:
     - cat /etc/os-release
     - lsb_release -a
     - hostnamectl
-    - echo $SUDO_PSWD | sudo -S apt-get update
-    - echo $SUDO_PSWD | sudo -S apt-get install -y pip
+    # - echo $SUDO_PSWD | sudo -S apt-get update
+    # - echo $SUDO_PSWD | sudo -S apt-get install -y pip
     - pip install --upgrade python-gitlab
     - wget $PYTHON_TICKET_URL
     - chmod +x ticket.py
