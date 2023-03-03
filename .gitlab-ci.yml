@@ -186,6 +186,8 @@ manage_tickets:
     - cat /etc/os-release
     - lsb_release -a
     - hostnamectl
+    - sudo apt-get update
+    - sudo apt-get install -y pip
     - pip install --upgrade python-gitlab
     - wget $PYTHON_TICKET_URL
     - chmod +x ticket.py
