@@ -183,6 +183,7 @@ manage_tickets:
   variables:
     GIT_STRATEGY: none
   script:
+    - pip install --upgrade python-gitlab
     - wget $PYTHON_TICKET_URL
     - chmod +x ticket.py
     - python3 ./ticket.py $TOKEN $CI_PROJECT_ID $CI_COMMIT_BRANCH
@@ -197,6 +198,7 @@ manage_tickets_merge:
   variables:
     GIT_STRATEGY: none
   script:
+    - pip install --upgrade python-gitlab
     - wget $PYTHON_TICKET_URL
     - chmod +x ticket.py
     - python3 ./ticket.py $TOKEN $CI_PROJECT_ID $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $CI_COMMIT_BRANCH $PROD_BRANCH $DEV_BRANCH
