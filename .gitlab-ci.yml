@@ -10,10 +10,10 @@ stages:
 image: gradle:alpine
 
 variables:
-  PYTHON_VERSION_URL: "https://raw.githubusercontent.com/ArthurTakase/GitlabGenerator/main/version.py"
-  PYTHON_TICKET_URL: "https://raw.githubusercontent.com/ArthurTakase/GitlabGenerator/main/ticket.py"
-  GITLAB_PYTHON_URL: "https://github.com/ArthurTakase/GitlabGenerator/raw/main/gitlab.tar.gz"
-  REQUESTS_PYTHON_URL: "https://github.com/ArthurTakase/GitlabGenerator/raw/main/requests_toolbelt.tar.gz"
+  PYTHON_VERSION_URL: "https://raw.githubusercontent.com/ArthurTakase/GitlabGenerator/main/src/version.py"
+  PYTHON_TICKET_URL: "https://raw.githubusercontent.com/ArthurTakase/GitlabGenerator/main/src/ticket.py"
+  GITLAB_PYTHON_URL: "https://github.com/ArthurTakase/GitlabGenerator/raw/main/src/gitlab.tar.gz"
+  REQUESTS_PYTHON_URL: "https://github.com/ArthurTakase/GitlabGenerator/raw/main/src/requests_toolbelt.tar.gz"
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
