@@ -215,6 +215,12 @@ manage_tickets_merge:
     - tar -xf requests_toolbelt.tar.gz -C requests_toolbelt
     - wget $PYTHON_TICKET_URL
     - chmod +x ticket.py
+    - echo $TOKEN
+    - echo $CI_PROJECT_ID
+    - echo $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
+    - echo $CI_COMMIT_BRANCH
+    - echo $PROD_BRANCH
+    - echo $DEV_BRANCH
     - python3 ./ticket.py $TOKEN $CI_PROJECT_ID $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $CI_COMMIT_BRANCH $PROD_BRANCH $DEV_BRANCH
   rules:
     - if: ($TOKEN && $CI_PIPELINE_SOURCE == "merge_request_event")
