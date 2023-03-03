@@ -13,6 +13,7 @@ variables:
   PYTHON_VERSION_URL: "https://raw.githubusercontent.com/ArthurTakase/GitlabGenerator/main/version.py"
   PYTHON_TICKET_URL: "https://raw.githubusercontent.com/ArthurTakase/GitlabGenerator/main/ticket.py"
   GITLAB_PYTHON_URL: "https://github.com/ArthurTakase/GitlabGenerator/raw/main/gitlab.tar.gz"
+  REQUESTS_PYTHON_URL: "https://github.com/ArthurTakase/GitlabGenerator/raw/main/requests_toolbelt.tar.gz"
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
@@ -184,10 +185,13 @@ manage_tickets:
   variables:
     GIT_STRATEGY: none
   script:
-    - rm -rf gitlab
+    - rm -rf gitlab/ requests_toolbelt/
     - wget $GITLAB_PYTHON_URL
+    - wget $REQUESTS_PYTHON_URL
     - mkdir gitlab
+    - mkdir requests_toolbelt
     - tar -xf gitlab.tar.gz -C gitlab
+    - tar -xf requests_toolbelt.tar.gz -C requests_toolbelt
     - wget $PYTHON_TICKET_URL
     - chmod +x ticket.py
     - python3 ./ticket.py $TOKEN $CI_PROJECT_ID $CI_COMMIT_BRANCH
@@ -202,10 +206,13 @@ manage_tickets_merge:
   variables:
     GIT_STRATEGY: none
   script:
-    - rm -rf gitlab
+    - rm -rf gitlab/ requests_toolbelt/
     - wget $GITLAB_PYTHON_URL
+    - wget $REQUESTS_PYTHON_URL
     - mkdir gitlab
+    - mkdir requests_toolbelt
     - tar -xf gitlab.tar.gz -C gitlab
+    - tar -xf requests_toolbelt.tar.gz -C requests_toolbelt
     - wget $PYTHON_TICKET_URL
     - chmod +x ticket.py
     - python3 ./ticket.py $TOKEN $CI_PROJECT_ID $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $CI_COMMIT_BRANCH $PROD_BRANCH $DEV_BRANCH
