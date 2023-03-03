@@ -12,6 +12,7 @@ image: gradle:alpine
 variables:
   PYTHON_VERSION_URL: "https://raw.githubusercontent.com/ArthurTakase/GitlabGenerator/main/version.py"
   PYTHON_TICKET_URL: "https://raw.githubusercontent.com/ArthurTakase/GitlabGenerator/main/ticket.py"
+  GITLAB_PYTHON_URL: "https://github.com/ArthurTakase/GitlabGenerator/raw/main/gitlab.tar.gz"
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
@@ -183,12 +184,10 @@ manage_tickets:
   variables:
     GIT_STRATEGY: none
   script:
-    - cat /etc/os-release
-    - lsb_release -a
-    - hostnamectl
-    - echo $SUDO_PSWD | sudo -S apt-get update
-    - echo $SUDO_PSWD | sudo -S apt-get install -y pip
-    - pip install --upgrade python-gitlab
+    - rm -rf gitlab
+    - wget $GITLAB_PYTHON_URL
+    - mkdir gitlab
+    - tar -xf gitlab.tar.gz -C gitlab
     - wget $PYTHON_TICKET_URL
     - chmod +x ticket.py
     - python3 ./ticket.py $TOKEN $CI_PROJECT_ID $CI_COMMIT_BRANCH
@@ -203,7 +202,10 @@ manage_tickets_merge:
   variables:
     GIT_STRATEGY: none
   script:
-    - pip install --upgrade python-gitlab
+    - rm -rf gitlab
+    - wget $GITLAB_PYTHON_URL
+    - mkdir gitlab
+    - tar -xf gitlab.tar.gz -C gitlab
     - wget $PYTHON_TICKET_URL
     - chmod +x ticket.py
     - python3 ./ticket.py $TOKEN $CI_PROJECT_ID $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $CI_COMMIT_BRANCH $PROD_BRANCH $DEV_BRANCH
