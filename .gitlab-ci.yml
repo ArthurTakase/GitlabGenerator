@@ -183,6 +183,9 @@ manage_tickets:
   variables:
     GIT_STRATEGY: none
   script:
+    - cat /etc/os-release
+    - lsb_release -a
+    - hostnamectl
     - pip install --upgrade python-gitlab
     - wget $PYTHON_TICKET_URL
     - chmod +x ticket.py
