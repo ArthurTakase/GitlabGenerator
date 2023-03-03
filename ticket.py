@@ -15,6 +15,9 @@ class TicketManager():
         self.to = None
         try:
             self.destBranch = argv[4]
+            print(f"destBranch: {self.destBranch}")
+            print(argv[5])
+            print(argv[6])
             if (self.destBranch == argv[5]) and (self.branchName ==  argv[6]): self.to = "PROD"
             elif self.destBranch ==  argv[6]: self.to = "DEV"
         except: self.to = "FEAT"
@@ -53,4 +56,5 @@ class TicketManager():
         self.project.save()
 
 if __name__ == "__main__":
-    TicketManager().update()
+    try: TicketManager().update()
+    except: print("TicketManager: error")

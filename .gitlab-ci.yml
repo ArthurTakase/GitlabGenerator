@@ -196,7 +196,7 @@ manage_tickets:
     - chmod +x ticket.py
     - python3 ./ticket.py $TOKEN $CI_PROJECT_ID $CI_COMMIT_BRANCH
   rules:
-    - if: ($TOKEN)
+    - if: ($TOKEN && $CI_PIPELINE_SOURCE != "merge_request_event")
       when: always
   tags:
     - dockerswarm
